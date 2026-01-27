@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - DM Design{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h1 class="display-6 mb-2">Welcome back, <span class="gradient-text">{{ user.username }}</span></h1>
+        
+        <!-- User Profile Card -->
+        <div class="card border-0 shadow-sm mt-4 mb-2" style="max-width: 400px; border-radius: var(--radius-lg);">
+            <div class="card-body d-flex align-items-center p-3">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                    <span class="fs-4 fw-bold">{{ user.username|make_list|first|upper }}</span>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold text-navy">{{ user.first_name }} {{ user.last_name }}</h6>
+                    <small class="text-muted d-block">{{ user.email|default:"user@example.com" }}</small>
+                    <small class="text-muted d-block">{{ user.phone_number }}</small>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-muted mt-3">Manage your inquiries, orders, and sample requests</p>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-number">{{ inquiries.count }}</div>
+            <div class="stat-label">Total Inquiries</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-number">{{ orders.count }}</div>
+            <div class="stat-label">Active Orders</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-number">{{ samples.count }}</div>
+            <div class="stat-label">Sample Requests</div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Tabs -->
+<ul class="nav nav-pills mb-4" id="dashboardTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active rounded-pill me-2" id="inquiries-tab" data-bs-toggle="tab" data-bs-target="#inquiries" type="button" role="tab">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="me-1">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+            </svg>
+            Inquiries
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill me-2" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="me-1">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            Orders
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill" id="samples-tab" data-bs-toggle="tab" data-bs-target="#samples" type="button" role="tab">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="me-1">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+            Samples
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="dashboardTabContent">
+    <!-- Inquiries Tab -->
+    <div class="tab-pane fade show active" id="inquiries" role="tabpanel">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5>My Inquiries</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-modern mb-0">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Target Price</th>
+                                <th>Status</th>
+                                <th>Admin Reply</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inquiry in inquiries %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'product_detail' inquiry.product.id %}" class="text-decoration-none text-navy fw-medium">
+                                        {{ inquiry.product.style_name }}
+                                    </a>
+                                </td>
+                                <td>{{ inquiry.requested_quantity }}</td>
+                                <td class="fw-medium">${{ inquiry.target_price }}</td>
+                                <td>
+                                    <span class="status-badge {% if inquiry.status == 'New' %}new{% elif inquiry.status == 'Replied' %}approved{% else %}pending{% endif %}">
+                                        {{ inquiry.status }}
+                                    </span>
+                                </td>
+                                <td>{{ inquiry.admin_reply|default:"—"|truncatechars:30 }}</td>
+                                <td class="text-muted">{{ inquiry.created_at|date:"M d, Y" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="mb-3 opacity-50">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                                    </svg>
+                                    <p class="mb-0">No inquiries yet. <a href="{% url 'product_list' %}">Browse products</a> to get started.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Tab -->
+    <div class="tab-pane fade" id="orders" role="tabpanel">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5>My Orders</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-modern mb-0">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Items</th>
+                                <th>Total Price</th>
+                                <th>Status</th>
+                                <th>Delivery Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td class="fw-medium">{{ order.order_number }}</td>
+                                <td>
+                                    {% for item in order.items.all %}
+                                        <div class="fw-medium text-navy text-nowrap">
+                                            {{ item.quantity }}x {{ item.product.style_name }}
+                                        </div>
+                                    {% empty %}
+                                        <span class="text-muted">No items</span>
+                                    {% endfor %}
+                                </td>
+                                <td class="fw-medium">${{ order.total_amount }}</td>
+                                <td>
+                                    {% with s=order.status %}
+                                    <span class="status-badge {% if s == 'Confirmed' %}new{% elif s == 'Shipped' %}shipped{% elif s == 'Completed' %}completed{% elif s == 'Cancelled' %}in-progress{% else %}in-progress{% endif %}">
+                                        {{ order.status }}
+                                    </span>
+                                    {% endwith %}
+                                </td>
+                                <td class="text-muted">{{ order.delivery_date|date:"M d, Y"|default:"TBD" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="mb-3 opacity-50">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                    </svg>
+                                    <p class="mb-0">No orders yet. Your confirmed orders will appear here.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Samples Tab -->
+    <div class="tab-pane fade" id="samples" role="tabpanel">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5>Sample Requests</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-modern mb-0">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Sample Type</th>
+                                <th>Request Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sample in samples %}
+                            <tr>
+                                <td class="fw-medium">{{ sample.product.style_name }}</td>
+                                <td>{{ sample.sample_type|default:"Standard" }}</td>
+                                <td class="text-muted">{{ sample.request_date|date:"M d, Y" }}</td>
+                                <td>
+                                    <span class="status-badge {% if sample.status == 'Pending' %}pending{% elif sample.status == 'Sent' %}shipped{% elif sample.status == 'Approved' %}approved{% else %}new{% endif %}">
+                                        {{ sample.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="mb-3 opacity-50">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                    </svg>
+                                    <p class="mb-0">No sample requests yet. Request samples from product pages.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Remove background and border from card headers for cleaner look */
+    .dashboard-card .card-header {
+        background: transparent !important;
+        border-bottom: none !important;
+        padding-bottom: 0;
+    }
+
+    .nav-pills {
+        gap: 1rem;
+    }
+    .nav-pills .nav-link {
+        background: var(--white);
+        color: var(--gray-500);
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-full);
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        box-shadow: var(--shadow-sm);
+    }
+    /* White text on hover with dark background */
+    .nav-pills .nav-link:hover {
+        background: var(--primary-navy-light);
+        color: var(--white) !important;
+        border-color: var(--primary-navy-light);
+        transform: translateY(-1px);
+    }
+    /* White text on active state */
+    .nav-pills .nav-link.active {
+        background: var(--primary-navy);
+        color: var(--white) !important;
+        border-color: var(--primary-navy);
+        box-shadow: var(--shadow-md);
+    }
+    .nav-pills .nav-link svg {
+        margin-right: 0.5rem;
+        transition: transform 0.2s ease;
+    }
+    .nav-pills .nav-link.active svg {
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DMBH - Apparel Buying House{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <style>
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=2670&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.2; /* Minimum opacity for subtle texture */
+            z-index: -1;
+            pointer-events: none;
+            filter: grayscale(100%); /* Make it black and white for modern feel */
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'product_list' %}">
+                <img src="{% static 'images/logo.png' %}" alt="DMBH Logo" style="height: 90px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Left Side Navigation -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'product_list' %}">Product Catalog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                </ul>
+
+                <!-- Right Side User Menu -->
+                <ul class="navbar-nav ms-auto align-items-center">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                        </li>
+                        <li class="nav-item me-3">
+                            <a class="nav-link position-relative" href="{% url 'view_cart' %}">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                {% if cart_item_count > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                    {{ cart_item_count }}
+                                </span>
+                                {% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item border-start ps-3 ms-2">
+                             <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger rounded-pill px-4">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item ms-lg-4">
+                            <a class="btn btn-outline-dark rounded-pill px-4" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-primary ms-2 rounded-pill px-4" href="{% url 'register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid py-5" style="max-width: 1600px;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer style="background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-navy-light) 100%);">
+        <div class="container py-5">
+            <div class="row g-4">
+                <!-- Brand Column -->
+                <div class="col-lg-4 col-md-6">
+                    <img src="{% static 'images/logo.png' %}" alt="DM Design Logo" style="height: 70px; filter: brightness(0) invert(1); opacity: 0.9;" class="mb-3">
+                    <p class="text-white-50 small mb-0">Your trusted partner for premium apparel sourcing from Bangladesh to global markets.</p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-white mb-3">Quick Links</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="{% url 'product_list' %}" class="text-white-50 text-decoration-none small">Product Catalog</a></li>
+                        <li class="mb-2"><a href="{% url 'contact' %}" class="text-white-50 text-decoration-none small">Contact Us</a></li>
+                        {% if user.is_authenticated %}
+                        <li class="mb-2"><a href="{% url 'dashboard' %}" class="text-white-50 text-decoration-none small">Dashboard</a></li>
+                        {% else %}
+                        <li class="mb-2"><a href="{% url 'register' %}" class="text-white-50 text-decoration-none small">Register</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                
+                <!-- Canada Office -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white mb-3">Canada Office</h6>
+                    <p class="text-white-50 small mb-1">K.S. Fashion Inc.</p>
+                    <p class="text-white-50 small mb-1">75 Tara Avenue, Toronto</p>
+                    <p class="text-white-50 small mb-0">ON M1K4B2, Canada</p>
+                </div>
+                
+                <!-- Bangladesh Office -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white mb-3">Bangladesh Office</h6>
+                    <p class="text-white-50 small mb-1">DM Design</p>
+                    <p class="text-white-50 small mb-1">GP KA-3/VE, Shahjadpur</p>
+                    <p class="text-white-50 small mb-0">Gulshan, Dhaka-1212</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Copyright Bar -->
+        <div class="border-top" style="border-color: rgba(255,255,255,0.1) !important;">
+            <div class="container py-3">
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <p class="text-white-50 small mb-0">&copy; 2026 DM Design - Apparel Buying House. All rights reserved.</p>
+                    <p class="text-white-50 small mb-0">Made with care in Bangladesh</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

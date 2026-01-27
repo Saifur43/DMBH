@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - DMBH{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="mb-5 text-center">
+            <h1 class="display-6 mb-2">Checkout</h1>
+            <p class="text-muted">Finalize your order request</p>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-xl mb-4">
+            <div class="card-header bg-navy text-white p-4">
+                <h5 class="mb-0">Order Review</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-navy mb-3">Buyer Information</h6>
+                        <p class="mb-1 fw-medium">{{ user.username }}</p>
+                        <p class="mb-1 text-muted">{{ user.email }}</p>
+                        <p class="mb-0 text-muted">{{ user.phone_number }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-navy mb-3">Delivery Information</h6>
+                        <p class="text-muted small">Standard delivery terms apply. Specific shipping details will be confirmed by our team after order placement.</p>
+                        <div class="alert alert-info py-2 px-3 small">
+                            Default Lead Time: 30 Days
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <h6 class="fw-bold text-navy mb-3">Items</h6>
+                {% for item in cart.items.all %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <span class="fw-medium">{{ item.quantity }}x</span> {{ item.product.style_name }}
+                        <span class="text-muted small ms-2">({{ item.product.code }})</span>
+                    </div>
+                    <span>${{ item.total_price }}</span>
+                </div>
+                {% endfor %}
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="fw-bold fs-5">Total Amount</span>
+                    <span class="fw-bold fs-4 text-navy">${{ cart.total_price }}</span>
+                </div>
+
+                <form method="post" id="orderForm">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-primary w-100 rounded-pill py-3 fw-bold shadow-md" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+                        Confirm Order
+                    </button>
+                    <a href="{% url 'view_cart' %}" class="btn btn-link text-muted w-100 mt-2 text-decoration-none">Back to Cart</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-xl overflow-hidden p-3">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-navy">Confirm Your Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="mb-3">
+                    <svg width="64" height="64" fill="none" stroke="var(--primary-navy)" viewBox="0 0 24 24" class="opacity-75">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <p class="mb-1 text-muted">You are about to place an order for <strong class="text-navy">${{ cart.total_price }}</strong>.</p>
+                <p class="small text-muted mb-0">Our team will review your request and contact you shortly.</p>
+            </div>
+            <div class="modal-footer border-0 pt-0 d-flex gap-2 justify-content-center pb-4">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary rounded-pill px-5 fw-bold" onclick="document.getElementById('orderForm').submit()">Yes, Place Order</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

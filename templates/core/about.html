@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - DMBH{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Hero Section -->
+    <div class="row align-items-center mb-5 pb-5 border-bottom">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <h1 class="display-4 fw-bold mb-3" style="font-family: 'Playfair Display', serif;">Bridging Global Fashion</h1>
+            <p class="lead text-muted mb-4">
+                DMBH is a premier apparel buying house connecting world-class manufacturing in Bangladesh with global fashion markets. We specialize in sourcing high-quality garments with uncompromised integrity.
+            </p>
+            <a href="{% url 'contact' %}" class="btn btn-primary rounded-pill px-4 py-2">Get in Touch</a>
+        </div>
+        <div class="col-lg-6 text-center">
+            <!-- You could put a hero image here if you had one, for now we use a nice placeholder or featured image -->
+            <img src="{% static 'images/logo.png' %}" alt="DMBH Logo" class="img-fluid" style="max-height: 200px;">
+        </div>
+    </div>
+
+    <!-- Our Leadership / Team Section -->
+    <div class="mb-5">
+        <div class="text-center mb-5">
+            <span class="text-primary text-uppercase fw-bold letter-spacing-2">Who We Are</span>
+            <h2 class="fw-bold mt-2">Meet Our Leadership</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                Our team is composed of industry veterans dedicated to quality, transparency, and timely delivery.
+            </p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <!-- Syed Kabir -->
+            <div class="col-md-5">
+                <div class="card border-0 shadow-sm h-100 overflow-hidden hover-card">
+                    <div class="row g-0 h-100 align-items-center">
+                        <div class="col-md-5 overflow-hidden" style="min-height: 250px;">
+                            <img src="{% static 'images/Syed Kabir.jpeg' %}" class="img-fluid h-100 w-100 object-fit-cover" alt="Syed Kabir" style="min-height: 250px;">
+                        </div>
+                        <div class="col-md-7">
+                            <div class="card-body p-4">
+                                <h4 class="card-title fw-bold mb-1">Syed Kabir</h4>
+                                <p class="text-primary mb-3">CEO & Founder</p>
+                                <p class="card-text text-muted small">
+                                    Leading our Bangladesh operations with over 20 years of experience in the garment industry. Dedicated to ensuring excellence in every production run.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canada Office Representative -->
+            <div class="col-md-5">
+                <div class="card border-0 shadow-sm h-100 overflow-hidden hover-card">
+                    <div class="row g-0 h-100 align-items-center">
+                        <div class="col-md-5 overflow-hidden" style="min-height: 250px;">
+                            <img src="{% static 'images/Canada Office man.jpeg' %}" class="img-fluid h-100 w-100 object-fit-cover" alt="Canada Operations" style="min-height: 250px;">
+                        </div>
+                        <div class="col-md-7">
+                            <div class="card-body p-4">
+                                <h4 class="card-title fw-bold mb-1">Global Operations</h4>
+                                <p class="text-primary mb-3">Canada Office</p>
+                                <p class="card-text text-muted small">
+                                    Managing our North American partnerships and ensuring seamless communication between buyers and our manufacturing hub.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our Values / Mission -->
+    <div class="row g-4 py-5 mt-5">
+        <div class="col-md-4">
+            <div class="p-4 rounded-3 h-100 text-center" style="background-color: rgba(var(--primary-navy-rgb), 0.03);">
+                <h3 class="h2 text-primary mb-3">01</h3>
+                <h5 class="fw-bold mb-3">Premium Quality</h5>
+                <p class="text-muted small mb-0">We inspect every stitch. Our quality control teams ensure that every garment meets international standards before shipment.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 rounded-3 h-100 text-center" style="background-color: rgba(var(--primary-navy-rgb), 0.03);">
+                <h3 class="h2 text-primary mb-3">02</h3>
+                <h5 class="fw-bold mb-3">Global Logistics</h5>
+                <p class="text-muted small mb-0">With offices in Bangladesh and Canada, we bridge the gap between manufacturing and retail, ensuring smooth logistics.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 rounded-3 h-100 text-center" style="background-color: rgba(var(--primary-navy-rgb), 0.03);">
+                <h3 class="h2 text-primary mb-3">03</h3>
+                <h5 class="fw-bold mb-3">Integrity</h5>
+                <p class="text-muted small mb-0">Transparency is our core value. We build long-term relationships based on trust, fair trade, and ethical manufacturing.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom styles for just this page if needed, though most should be in main CSS */
+    .object-fit-cover {
+        object-fit: cover;
+    }
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    .letter-spacing-2 {
+        letter-spacing: 2px;
+    }
+</style>
+{% endblock %}

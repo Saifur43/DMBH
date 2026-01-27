@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Shopping Cart - DMBH{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-12">
+        <h1 class="display-6 mb-2">Shopping Cart</h1>
+        <p class="text-muted">Review your items before requesting an order.</p>
+    </div>
+</div>
+
+{% if cart.items.all %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-xl">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-modern mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4" style="width: 40%">Product</th>
+                                <th style="width: 20%">Price</th>
+                                <th style="width: 20%">Quantity</th>
+                                <th class="text-end pe-4" style="width: 20%">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart.items.all %}
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        {% if item.product.main_image %}
+                                            <img src="{{ item.product.main_image.url }}" alt="{{ item.product.style_name }}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center text-muted" style="width: 60px; height: 60px;">No tag</div>
+                                        {% endif %}
+                                        <div>
+                                            <a href="{% url 'product_detail' item.product.id %}" class="text-decoration-none text-navy fw-bold d-block mb-1">{{ item.product.style_name }}</a>
+                                            <small class="text-muted">{{ item.product.code }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="fw-medium">${{ item.product.target_price }}</td>
+                                <td>
+                                    <form action="{% url 'update_cart' item.id %}" method="post" class="d-flex align-items-center">
+                                        {% csrf_token %}
+                                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control form-control-sm text-center me-2" style="width: 120px;">
+                                        <button type="submit" class="btn btn-sm btn-link text-muted p-0">
+                                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                            </svg>
+                                        </button>
+                                        <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-sm btn-link text-danger ms-2 p-0">
+                                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                        </a>
+                                    </form>
+                                </td>
+                                <td class="text-end pe-4 fw-bold text-navy">${{ item.total_price }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-xl mb-4">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4">Order Summary</h5>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Subtotal ({{ cart.total_items }} items)</span>
+                    <span class="fw-bold">${{ cart.total_price }}</span>
+                </div>
+                <!-- <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Estimated Shipping</span>
+                    <span class="text-success">TBD</span>
+                </div> -->
+                <hr class="my-4">
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="fw-bold fs-5">Total Estimate</span>
+                    <span class="fw-bold fs-5 text-navy">${{ cart.total_price }}</span>
+                </div>
+                <a href="{% url 'checkout' %}" class="btn btn-primary w-100 rounded-pill py-2">Proceed to Checkout</a>
+            </div>
+        </div>
+        <div class="text-center">
+            <a href="{% url 'product_list' %}" class="text-decoration-none text-muted small">
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="me-1">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Continue Shopping
+            </a>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <div class="mb-4">
+        <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-muted opacity-25">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+    </div>
+    <h3 class="fw-bold text-navy mb-3">Your cart is empty</h3>
+    <p class="text-muted mb-4">Looks like you haven't added any products to your cart yet.</p>
+    <a href="{% url 'product_list' %}" class="btn btn-primary rounded-pill px-5">Start Shopping</a>
+</div>
+{% endif %}
+{% endblock %}

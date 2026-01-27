@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - DM Design{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="text-center mb-4">
+            <h2 class="mb-2">Create Account</h2>
+            <p class="text-muted">Join as a buyer and explore our apparel collection</p>
+        </div>
+        <div class="card dashboard-card">
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <div class="form-text small text-muted">{{ field.help_text|safe }}</div>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="text-danger small mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <div class="d-grid mb-4 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                            Create Account
+                        </button>
+                    </div>
+                </form>
+                <div class="text-center">
+                    <p class="text-muted mb-0">Already have an account? <a href="{% url 'login' %}" class="text-decoration-none fw-medium" style="color: var(--accent-gold-dark);">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Style form fields from Django form rendering */
+    #id_username, #id_email, #id_phone_number, #id_password1, #id_password2, #id_first_name, #id_last_name {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 2px solid var(--gray-200);
+        border-radius: var(--radius-md);
+        transition: var(--transition-fast);
+    }
+    #id_username:focus, #id_email:focus, #id_phone_number:focus, #id_password1:focus, #id_password2:focus, #id_first_name:focus, #id_last_name:focus {
+        border-color: var(--accent-gold);
+        box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.15);
+        outline: none;
+    }
+</style>
+{% endblock %}
