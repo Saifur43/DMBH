@@ -12,12 +12,15 @@
     
     <div class="d-flex gap-3 align-items-center">
         <!-- Search Form -->
-        <form method="get" action="{% url 'product_search' %}" class="d-flex">
+        <form method="get" action="{% url 'product_search' %}" class="d-flex" id="searchForm">
             {% if request.GET.category %}
             <input type="hidden" name="category" value="{{ request.GET.category }}">
             {% endif %}
             <div class="input-group">
-                <input type="text" name="q" class="form-control rounded-pill" placeholder="Search products..." value="{{ search_query|default:'' }}">
+                <input type="text" name="q" id="searchInput" class="form-control rounded-pill" placeholder="Search products..." value="{{ search_query|default:'' }}" autocomplete="off">
+                <span class="input-group-text border-0 bg-transparent" id="searchSpinner" style="display: none;">
+                    <div class="spinner-border spinner-border-sm text-muted" role="status"></div>
+                </span>
                 <button class="btn btn-outline-dark rounded-pill" type="submit">
                     <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -166,4 +169,26 @@
         border-color: var(--primary-navy);
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const searchForm = document.getElementById('searchForm');
+        const searchSpinner = document.getElementById('searchSpinner');
+        let debounceTimer;
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            searchSpinner.style.display = 'inline-flex';
+            
+            debounceTimer = setTimeout(function() {
+                searchForm.submit();
+            }, 500);
+        });
+
+        searchForm.addEventListener('submit', function() {
+            searchSpinner.style.display = 'inline-flex';
+        });
+    });
+</script>
 {% endblock %}
