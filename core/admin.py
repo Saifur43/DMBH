@@ -67,3 +67,10 @@ class ContactMessageAdmin(admin.ModelAdmin):
     search_fields = ('name', 'email', 'message')
     readonly_fields = ('name', 'email', 'phone', 'message', 'created_at')
     list_editable = ('is_read',)
+
+
+@admin.register(ProductImage)
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ('product', 'is_main', 'created_at')
+    list_filter = ('is_main', 'created_at')
+    search_fields = ('product__style_name',)
