@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'jazzmin',
     'core',
 ]
 
@@ -153,3 +154,20 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 3600
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+
+# Jazzmin Settings
+JAZZMIN_SETTINGS = {
+    "site_title": "DMBH Management",
+    "site_header": "DMBH",
+    "site_brand": "DMBH",
+    "site_logo": "images/logo.png",
+    "welcome_message": "Welcome to DMBH Admin",
+    "copyright": "DM Design 2026",
+    "topbar_links": [
+        {"name": "Home", "url": "/", "icon": "fas fa-home"},
+        {"name": "View Site", "url": "/", "icon": "fas fa-eye", "new_window": True},
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "ui_preference": "dark",
+}
