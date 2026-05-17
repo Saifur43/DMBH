@@ -38,14 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'unfold',
-    'unfold.contrib.filters',
-    'unfold.contrib.forms',
     'core',
 ]
-
-# Unfold Settings
-X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
