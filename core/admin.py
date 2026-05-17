@@ -1,12 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from unfold.admin import ModelAdmin
 from .models import User, Product, Inquiry, SampleRequest, Order, ProductImage, OrderItem, ContactMessage
 from django.utils.html import format_html
 
 
 @admin.register(User)
-class CustomUserAdmin(ModelAdmin, UserAdmin):
+class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'phone_number', 'role', 'is_staff')
     list_filter = ('role', 'is_staff', 'is_active')
     search_fields = ('username', 'email', 'first_name', 'last_name')
@@ -21,7 +20,7 @@ class ProductImageInline(admin.TabularInline):
 
 
 @admin.register(Product)
-class ProductAdmin(ModelAdmin):
+class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline]
     list_display = ('code', 'style_name', 'category', 'target_price', 'is_active', 'image_preview')
     list_filter = ('category', 'is_active')
@@ -34,7 +33,7 @@ class ProductAdmin(ModelAdmin):
 
 
 @admin.register(Inquiry)
-class InquiryAdmin(ModelAdmin):
+class InquiryAdmin(admin.ModelAdmin):
     list_display = ('product', 'buyer', 'requested_quantity', 'status', 'created_at')
     list_filter = ('status', 'created_at')
     search_fields = ('product__style_name', 'buyer__username')
@@ -42,7 +41,7 @@ class InquiryAdmin(ModelAdmin):
 
 
 @admin.register(SampleRequest)
-class SampleRequestAdmin(ModelAdmin):
+class SampleRequestAdmin(admin.ModelAdmin):
     list_display = ('product', 'buyer', 'sample_type', 'status', 'request_date')
     list_filter = ('status', 'request_date')
 
@@ -54,7 +53,7 @@ class OrderItemInline(admin.TabularInline):
 
 
 @admin.register(Order)
-class OrderAdmin(ModelAdmin):
+class OrderAdmin(admin.ModelAdmin):
     list_display = ('order_number', 'buyer', 'total_items', 'total_amount', 'status', 'created_at')
     list_filter = ('status', 'created_at')
     search_fields = ('order_number', 'buyer__username')
@@ -62,7 +61,7 @@ class OrderAdmin(ModelAdmin):
 
 
 @admin.register(ContactMessage)
-class ContactMessageAdmin(ModelAdmin):
+class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'phone', 'is_read', 'created_at')
     list_filter = ('is_read', 'created_at')
     search_fields = ('name', 'email', 'message')
