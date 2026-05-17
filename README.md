@@ -102,5 +102,17 @@ Visit `http://127.0.0.1:8000/` in your browser.
 4.  **Checkout**: Users confirm the total amount and place the order via a Confirmation Modal.
 5.  **Tracking**: The Order is saved to the database and appears in the User Dashboard and Admin Panel.
 
+## 🚀 Deploy to Render
+
+1. Push code to GitHub
+2. Create a new Web Service on Render
+3. Connect to your GitHub repo
+4. Set environment variables:
+   - `DJANGO_SECRET_KEY`: Generate a secure key
+   - `DEBUG`: `False`
+   - `ALLOWED_HOSTS`: Your Render domain
+5. Build Command: `pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput`
+6. Start Command: `gunicorn dmbh_system.wsgi`
+
 ---
 **Developed for DM Design**

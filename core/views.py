@@ -2,23 +2,45 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import login
-from .models import Product, Inquiry, SampleRequest, Order, Cart, CartItem, OrderItem
-from .forms import BuyerRegistrationForm
+from django.db import models
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from .models import Product, Inquiry, SampleRequest, Order, Cart, CartItem, OrderItem, User
+from .forms import BuyerRegistrationForm, ContactForm
 
 def about(request):
     return render(request, 'core/about.html')
 
 def product_list(request):
     category = request.GET.get('category')
+    search_query = request.GET.get('q', '')
+    page = request.GET.get('page', 1)
+    
     products = Product.objects.filter(is_active=True)
     categories = Product.objects.values_list('category', flat=True).distinct()
 
     if category:
         products = products.filter(category=category)
+    
+    if search_query:
+        products = products.filter(
+            models.Q(style_name__icontains=search_query) |
+            models.Q(code__icontains=search_query) |
+            models.Q(fabric_type__icontains=search_query) |
+            models.Q(description__icontains=search_query)
+        )
+
+    paginator = Paginator(products, 12)
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
 
     return render(request, 'core/product_list.html', {
         'products': products,
-        'categories': categories
+        'categories': categories,
+        'search_query': search_query
     })
 
 def product_detail(request, pk):
@@ -82,7 +104,15 @@ def register(request):
     return render(request, 'core/register.html', {'form': form})
 
 def contact(request):
-    return render(request, 'core/contact.html')
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Thank you for your message! We will get back to you soon.')
+            return redirect('contact')
+    else:
+        form = ContactForm()
+    return render(request, 'core/contact.html', {'form': form})
 
 @login_required
 def add_to_cart(request, pk):

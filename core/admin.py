@@ -1,24 +1,24 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Product, Inquiry, SampleRequest, Order, ProductImage, OrderItem
+from unfold.admin import ModelAdmin
+from .models import User, Product, Inquiry, SampleRequest, Order, ProductImage, OrderItem, ContactMessage
 from django.utils.html import format_html
 
-# Customize User Admin to show roles
-class CustomUserAdmin(UserAdmin):
+@admin.register(User)
+class CustomUserAdmin(ModelAdmin, UserAdmin):
     list_display = ('username', 'email', 'phone_number', 'role', 'is_staff')
     list_filter = ('role', 'is_staff', 'is_active')
+    search_fields = ('username', 'email', 'first_name', 'last_name')
     fieldsets = UserAdmin.fieldsets + (
         ('Role', {'fields': ('role', 'phone_number')}),
     )
-
-admin.site.register(User, CustomUserAdmin)
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
     extra = 1
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(ModelAdmin):
     inlines = [ProductImageInline]
     list_display = ('code', 'style_name', 'category', 'target_price', 'is_active', 'image_preview')
     list_filter = ('category', 'is_active')
@@ -30,7 +30,7 @@ class ProductAdmin(admin.ModelAdmin):
         return "No Image"
 
 @admin.register(Inquiry)
-class InquiryAdmin(admin.ModelAdmin):
+class InquiryAdmin(ModelAdmin):
     list_display = ('product', 'buyer', 'requested_quantity', 'status', 'created_at')
     list_filter = ('status', 'created_at')
     search_fields = ('product__style_name', 'buyer__username')
@@ -43,7 +43,7 @@ class InquiryAdmin(admin.ModelAdmin):
     mark_as_closed.short_description = "Mark selected inquiries as Closed"
 
 @admin.register(SampleRequest)
-class SampleRequestAdmin(admin.ModelAdmin):
+class SampleRequestAdmin(ModelAdmin):
     list_display = ('product', 'buyer', 'sample_type', 'status', 'request_date')
     list_filter = ('status', 'request_date')
     actions = ['approve_sample', 'mark_sent']
@@ -60,12 +60,16 @@ class OrderItemInline(admin.TabularInline):
     readonly_fields = ('total_price',)
 
 @admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
+class OrderAdmin(ModelAdmin):
     list_display = ('order_number', 'buyer', 'total_items', 'total_amount', 'status', 'created_at')
     list_filter = ('status', 'created_at')
     search_fields = ('order_number', 'buyer__username')
     inlines = [OrderItemInline]
 
-admin.site.site_header = "DMBH Management System"
-admin.site.site_title = "DMBH Admin"
-admin.site.index_title = "Welcome to DMBH Dashboard"
+@admin.register(ContactMessage)
+class ContactMessageAdmin(ModelAdmin):
+    list_display = ('name', 'email', 'phone', 'is_read', 'created_at')
+    list_filter = ('is_read', 'created_at')
+    search_fields = ('name', 'email', 'message')
+    readonly_fields = ('name', 'email', 'phone', 'message', 'created_at')
+    list_editable = ('is_read',)

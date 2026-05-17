@@ -1,0 +1,1 @@
+web: gunicorn dmbh_system.wsgi --log-file -

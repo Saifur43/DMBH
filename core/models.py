@@ -60,19 +60,29 @@ class Product(models.Model):
         ('Formal Shirt', 'Formal Shirt'),
         ('Hoodie', 'Hoodie'),
         ('Jacket', 'Jacket'),
+        ('Jersey', 'Jersey'),
         ('Joggers', 'Joggers'),
         ('Kids Wear', 'Kids Wear'),
+        ('Leather Jacket', 'Leather Jacket'),
+        ('Leggings', 'Leggings'),
+        ('Nightwear', 'Nightwear'),
+        ('Pajamas', 'Pajamas'),
         ('Pants', 'Pants'),
         ('Polo Shirt', 'Polo Shirt'),
         ('Puffy Vest', 'Puffy Vest'),
+        ('Raincoat', 'Raincoat'),
         ('Shirt', 'Shirt'),
         ('Shorts', 'Shorts'),
+        ('Skirt', 'Skirt'),
         ('Suit', 'Suit'),
         ('Sweater', 'Sweater'),
         ('Sweatshirt', 'Sweatshirt'),
         ('T-Shirt', 'T-Shirt'),
         ('Track Pants', 'Track Pants'),
+        ('Trunks', 'Trunks'),
+        ('Tunik', 'Tunik'),
         ('Vest', 'Vest'),
+        ('Winter Jacket', 'Winter Jacket'),
         ('Other', 'Other'),
     )
 
@@ -191,3 +201,14 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.style_name} in {self.order.order_number}"
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Message from {self.name} - {self.created_at.strftime('%Y-%m-%d')}"

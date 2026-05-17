@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.product_list, name='product_list'),
+    path('search/', views.product_list, name='product_search'),
     path('product/<int:pk>/', views.product_detail, name='product_detail'),
     path('product/<int:pk>/inquire/', views.send_inquiry, name='send_inquiry'),
     path('product/<int:pk>/sample/', views.request_sample, name='request_sample'),
@@ -20,4 +21,10 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='core/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='product_list'), name='logout'),
+    
+    # Password reset URLs
+    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='core/password_reset.html'), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='core/password_reset_done.html'), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='core/password_reset_confirm.html'), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='core/password_reset_complete.html'), name='password_reset_complete'),
 ]

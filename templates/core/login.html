@@ -29,7 +29,8 @@
                     <input type="hidden" name="next" value="{{ next }}">
                 </form>
                 <div class="text-center">
-                    <p class="text-muted mb-0">Don't have an account? <a href="{% url 'register' %}" class="text-decoration-none fw-medium" style="color: var(--accent-gold-dark);">Create one</a></p>
+                    <p class="mb-2">Don't have an account? <a href="{% url 'register' %}" class="text-decoration-none fw-medium" style="color: var(--accent-gold-dark);">Create one</a></p>
+                    <p class="text-muted small mb-0"><a href="{% url 'password_reset' %}" class="text-decoration-none">Forgot your password?</a></p>
                 </div>
             </div>
         </div>
