@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'core',
 ]
 
+# Unfold Settings
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
